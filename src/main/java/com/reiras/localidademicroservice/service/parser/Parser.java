@@ -7,5 +7,5 @@ import com.reiras.localidademicroservice.domain.Localidade;
 
 public interface Parser {
 
-	public InputStream parse(List<Localidade> localidadeList);
+	public InputStream parse(List<Localidade> localidadesList);
 }

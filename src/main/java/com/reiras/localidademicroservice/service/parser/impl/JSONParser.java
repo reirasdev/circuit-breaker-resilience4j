@@ -23,15 +23,15 @@ public class JSONParser implements Parser {
 	private static final String OBJECT_SEPARATOR = ",";
 
 	@Override
-	public InputStream parse(List<Localidade> localidadeList) {
+	public InputStream parse(List<Localidade> localidadesList) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		StringBuffer strJson = new StringBuffer("[");
 		
-		if (localidadeList.isEmpty()) {
+		if (localidadesList.isEmpty()) {
 			strJson.append("]");
 		} else {
-			for (Localidade localidade : localidadeList) {
+			for (Localidade localidade : localidadesList) {
 
 				try {
 					strJson.append(objectMapper.writeValueAsString(localidade));
@@ -48,9 +48,9 @@ public class JSONParser implements Parser {
 		InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(strJson.toString().getBytes()));
 
 		LOGGER.info(new StringBuffer("[parse]")
-				.append(" Input=>{localidadeList=").append(localidadeList.getClass()).append("}")
-				.append(" List Size=>{").append(localidadeList.size()).append("}")
-				.append(" Output=>{").append(inputStream).append("}").toString());
+				.append(" Input=>{localidadesList=").append(localidadesList.getClass())
+				.append(":").append(localidadesList.size()).append("items}")
+				.append(" Output=>{").append(inputStream.getClass()).append("}").toString());
 
 		return inputStream;
 	}

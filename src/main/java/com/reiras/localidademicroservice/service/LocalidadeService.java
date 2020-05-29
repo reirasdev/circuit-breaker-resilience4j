@@ -43,13 +43,14 @@ public class LocalidadeService {
 	
 	public List<Localidade> findLocalidadeBySiglaEstado(String siglaEstado) {
 
-		List<Localidade> localidadeList = restDao.findLocalidadeBySiglaEstado(siglaEstado);
+		List<Localidade> localidadesList = restDao.findLocalidadeBySiglaEstado(siglaEstado);
 
 		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstado]")
 				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
-				.append(" Output=>{").append(localidadeList.getClass()).append("}").toString());
+				.append(" Output=>{").append(localidadesList.getClass())
+				.append(":").append(localidadesList.size()).append("items}").toString());
 
-		return localidadeList;
+		return localidadesList;
 	}
 	
 	public InputStream findLocalidadeBySiglaEstadoParseFile(String siglaEstado, ParserContentType contentType) {
@@ -61,7 +62,7 @@ public class LocalidadeService {
 		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoParseFile]")
 				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
 				.append("{contentType=").append(contentType).append("}")
-				.append(" Output=>{").append(inputStream).append("}").toString());
+				.append(" Output=>{").append(inputStream.getClass()).append("}").toString());
 
 		return inputStream;
 	}

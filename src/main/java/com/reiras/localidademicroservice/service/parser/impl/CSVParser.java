@@ -20,10 +20,10 @@ public class CSVParser implements Parser {
 	private static final String FIELD_SEPARATOR = ",";
 
 	@Override
-	public InputStream parse(List<Localidade> localidadeList) {
+	public InputStream parse(List<Localidade> localidadesList) {
 
 		StringBuffer strCsv = new StringBuffer("idEstado,siglaEstado,regiaoNome,nomeCidade,nomeMesorregiao,nomeFormatado\n");
-		for(Localidade localidade : localidadeList) {
+		for(Localidade localidade : localidadesList) {
 			strCsv.append(localidade.getIdEstado());
 			strCsv.append(FIELD_SEPARATOR);
 			strCsv.append(localidade.getSiglaEstado());
@@ -41,9 +41,9 @@ public class CSVParser implements Parser {
 		InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(strCsv.toString().getBytes()));
 
 		LOGGER.info(new StringBuffer("[parse]")
-				.append(" Input=>{localidadeList=").append(localidadeList.getClass()).append("}")
-				.append(" List Size=>{").append(localidadeList.size()).append("}")
-				.append(" Output=>{").append(inputStream).append("}").toString());
+				.append(" Input=>{localidadesList=").append(localidadesList.getClass())
+				.append(":").append(localidadesList.size()).append("items}")
+				.append(" Output=>{").append(inputStream.getClass()).append("}").toString());
 
 		return inputStream;
 	}
