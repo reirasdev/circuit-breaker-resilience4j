@@ -22,7 +22,7 @@ public class LocalidadeService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalidadeService.class);
 
 	@Autowired
-	private Dao restDao;
+	private Dao<Localidade> localidadeRestDao;
 	
 	@Autowired
 	private ParserFactory parserFactory;
@@ -30,7 +30,7 @@ public class LocalidadeService {
 	@Cacheable(cacheNames = "ufCidade")
 	public Localidade findLocalidadeBySiglaEstadoAndNomeCidade(String siglaEstado, String nomeCidade) {
 
-		Optional<Localidade> localidade = restDao.findLocalidadeBySiglaEstadoAndNomeCidade(siglaEstado, nomeCidade);
+		Optional<Localidade> localidade = localidadeRestDao.findByStateAndCity(siglaEstado, nomeCidade);
 
 		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoAndNomeCidade]")
 				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
@@ -43,7 +43,7 @@ public class LocalidadeService {
 	
 	public List<Localidade> findLocalidadeBySiglaEstado(String siglaEstado) {
 
-		List<Localidade> localidadesList = restDao.findLocalidadeBySiglaEstado(siglaEstado);
+		List<Localidade> localidadesList = localidadeRestDao.findByState(siglaEstado);
 
 		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstado]")
 				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
@@ -55,7 +55,7 @@ public class LocalidadeService {
 	
 	public InputStream findLocalidadeBySiglaEstadoParseFile(String siglaEstado, ParserContentType contentType) {
 
-		List<Localidade> localidadeList = restDao.findLocalidadeBySiglaEstado(siglaEstado);
+		List<Localidade> localidadeList = localidadeRestDao.findByState(siglaEstado);
 		
 		InputStream inputStream = parserFactory.getParser(contentType).parse(localidadeList);
 

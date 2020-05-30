@@ -3,12 +3,10 @@ package com.reiras.localidademicroservice.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.reiras.localidademicroservice.domain.Localidade;
+public interface Dao<T> {
 
-public interface Dao {
+	public Optional<T> findByStateAndCity(String state, String city);
 
-	Optional<Localidade> findLocalidadeBySiglaEstadoAndNomeCidade(String siglaEstado, String name);
-
-	List<Localidade> findLocalidadeBySiglaEstado(String siglaEstado);
+	public List<T> findByState(String state);
 
 }

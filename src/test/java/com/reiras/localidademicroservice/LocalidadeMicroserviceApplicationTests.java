@@ -6,22 +6,28 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.reiras.localidademicroservice.controller.LocalidadeController;
 import com.reiras.localidademicroservice.dao.Dao;
+import com.reiras.localidademicroservice.domain.Localidade;
 import com.reiras.localidademicroservice.service.LocalidadeService;
 
 @SpringBootTest
 class LocalidadeMicroserviceApplicationTests {
 
 	@Autowired
-	private Dao jsonDao;
+	private Dao<Localidade> localidadeRestDao;
 
 	@Autowired
-	private LocalidadeService localidadeService;
+	private LocalidadeService localidadeServiceRest;
+
+	@Autowired
+	private LocalidadeController localidadeController;
 
 	@Test
 	void contextLoads() {
-		assertNotNull(jsonDao);
-		assertNotNull(localidadeService);
+		assertNotNull(localidadeRestDao);
+		assertNotNull(localidadeServiceRest);
+		assertNotNull(localidadeController);
 	}
 
 }

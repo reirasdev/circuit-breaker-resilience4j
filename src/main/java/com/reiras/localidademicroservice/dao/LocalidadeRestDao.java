@@ -17,9 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import com.reiras.localidademicroservice.domain.Localidade;
 
 @Component
-public class RestDao implements Dao {
+public class LocalidadeRestDao implements Dao<Localidade> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestDao.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalidadeRestDao.class);
 
 	private static final String LOCALIDADES_ENDPOINT_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/{UF}/municipios";
 
@@ -30,35 +30,35 @@ public class RestDao implements Dao {
 	private CircuitBreakerFactory circuitBreakerFactory;
 	
 	@Override
-	public Optional<Localidade> findLocalidadeBySiglaEstadoAndNomeCidade(String siglaEstado, String nomeCidade) {
+	public Optional<Localidade> findByStateAndCity(String state, String city) {
 
-		List<Localidade> localidadesList = this.findLocalidadeBySiglaEstado(siglaEstado);
-		Object[] localidadeArray = localidadesList.stream().filter(localidade -> localidade.getNomeCidade().equalsIgnoreCase(nomeCidade)).toArray();
+		List<Localidade> localidadesList = this.findByState(state);
+		Object[] localidadeArray = localidadesList.stream().filter(localidade -> localidade.getNomeCidade().equalsIgnoreCase(city)).toArray();
 
 		if (localidadeArray.length == 0)
 			return Optional.empty();
 
 		Localidade localidade = (Localidade) localidadeArray[0];
 		
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoAndNomeCidade]")
-				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
-				.append("{nomeCidade=").append(nomeCidade).append("}")
+		LOGGER.info(new StringBuffer("[findByStateAndCity]")
+				.append(" Input=>{state=").append(state).append("}")
+				.append("{city=").append(city).append("}")
 				.append(" Output=>{").append(localidade).append("}").toString());
 		
 		return Optional.of(localidade);		
 	}
 
 	@Override
-	public List<Localidade> findLocalidadeBySiglaEstado(String siglaEstado) {
+	public List<Localidade> findByState(String state) {
 		
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
 		
-		ResponseEntity<List<Localidade>> response = circuitBreaker.run(() -> this.runLocalidadesEndpoint(siglaEstado));
+		ResponseEntity<List<Localidade>> response = circuitBreaker.run(() -> this.runLocalidadesEndpoint(state));
 		
 		List<Localidade> localidadesList = response.getBody();
 		
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstado]")
-				.append(" Input=>{siglaEstado=").append(siglaEstado).append("}")
+		LOGGER.info(new StringBuffer("[findByState]")
+				.append(" Input=>{state=").append(state).append("}")
 				.append(" Output=>{").append(localidadesList.getClass())
 				.append(":").append(localidadesList.size()).append("items}").toString());
 		
