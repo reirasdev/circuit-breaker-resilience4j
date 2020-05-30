@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.reiras.localidademicroservice.controller.LocalidadeController;
 import com.reiras.localidademicroservice.dao.Dao;
 import com.reiras.localidademicroservice.domain.Localidade;
-import com.reiras.localidademicroservice.service.LocalidadeService;
+import com.reiras.localidademicroservice.service.Service;
 
 @SpringBootTest
 class LocalidadeMicroserviceApplicationTests {
@@ -18,7 +18,7 @@ class LocalidadeMicroserviceApplicationTests {
 	private Dao<Localidade> localidadeRestDao;
 
 	@Autowired
-	private LocalidadeService localidadeServiceRest;
+	private Service<Localidade> localidadeService;
 
 	@Autowired
 	private LocalidadeController localidadeController;
@@ -26,7 +26,7 @@ class LocalidadeMicroserviceApplicationTests {
 	@Test
 	void contextLoads() {
 		assertNotNull(localidadeRestDao);
-		assertNotNull(localidadeServiceRest);
+		assertNotNull(localidadeService);
 		assertNotNull(localidadeController);
 	}
 

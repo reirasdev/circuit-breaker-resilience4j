@@ -26,55 +26,55 @@ import com.reiras.localidademicroservice.service.parser.ParserContentType;
 public class LocalidadeServiceRestTest {
 
 	@Autowired
-	private LocalidadeService localidadeServiceRest;
+	private Service<Localidade> localidadeService;
 
 	@Test
-	public void findLocalidadeBySiglaEstadoAndNomeCidade_givenValidNomeCidadeAndSiglaEstado_thenReturnIdCidade() {
-		Localidade obj = localidadeServiceRest.findLocalidadeBySiglaEstadoAndNomeCidade("RJ", "Rio de Janeiro");
+	public void findByStateAndCity_givenValidStateAndCity_thenReturnLocalidade() {
+		Localidade obj = localidadeService.findByStateAndCity("RJ", "Rio de Janeiro");
 		assertNotNull(obj);
 		assertEquals(obj.getIdCidade(), 3304557);
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoAndNomeCidade_givenNoExistingNomeCidadeAndValidSiglaEstado_thenReturnEmpty() {
+	public void findByStateAndCity_givenValidStateAndNoExistingCity_thenReturnEmpty() {
 		assertThrows(ObjectNotFoundException.class, () -> {
-			localidadeServiceRest.findLocalidadeBySiglaEstadoAndNomeCidade("RJ", "NON EXISTENT");
+			localidadeService.findByStateAndCity("RJ", "NON EXISTENT");
 		});
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoAndNomeCidade_givenValidNomeCidadeAndNoExistingSiglaEstado_thenReturnEmpty() {
+	public void findByStateAndCity_givenNoExistingStateAndValidCity_thenReturnEmpty() {
 		assertThrows(ObjectNotFoundException.class, () -> {
-			localidadeServiceRest.findLocalidadeBySiglaEstadoAndNomeCidade("XX", "Rio de Janeiro");
+			localidadeService.findByStateAndCity("XX", "Rio de Janeiro");
 		});
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoAndNomeCidade_givenNoExistingNomeCidadeAndSiglaEstado_thenReturnEmpty() {
+	public void findByStateAndCity_givenNoExistingStateAndCity_thenReturnEmpty() {
 		assertThrows(ObjectNotFoundException.class, () -> {
-			localidadeServiceRest.findLocalidadeBySiglaEstadoAndNomeCidade("XX", "NON EXISTENT");
+			localidadeService.findByStateAndCity("XX", "NON EXISTENT");
 		});
 	}
 
 	@Test
-	public void findLocalidadesBySiglaEstado_givenValidSiglaEstado_thenResturnListOfCities() {
-		List<Localidade> obj = localidadeServiceRest.findLocalidadeBySiglaEstado("SC");
+	public void findByState_givenValidState_thenResturnListOfCities() {
+		List<Localidade> obj = localidadeService.findByState("AM");
 		assertNotNull(obj);
 		assertFalse(obj.isEmpty());
 	}
 
 	@Test
-	public void findLocalidadesBySiglaEstado_givenNoExistingSiglaEstado_thenReturnEmptyList() {
-		List<Localidade> obj = localidadeServiceRest.findLocalidadeBySiglaEstado("XX");
+	public void findByState_givenNoExistingState_thenReturnEmptyList() {
+		List<Localidade> obj = localidadeService.findByState("XX");
 		assertNotNull(obj);
 		assertTrue(obj.isEmpty());
 	}
-	
+
 	@Test
-	public void findLocalidadeBySiglaEstadoParseFileCsv_givenValidSiglaEstado_thenResturnListOfCities() throws IOException {
-		InputStream csvStream = localidadeServiceRest.findLocalidadeBySiglaEstadoParseFile("PB", ParserContentType.CSV);
+	public void findByStateParseFileCsv_givenValidState_thenResturnStreamWithListOfCities() throws IOException {
+		InputStream csvStream = localidadeService.findByStateParseFile("PB", ParserContentType.CSV);
 		assertNotNull(csvStream);
-		
+
 		BufferedReader csvReader = new BufferedReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8));
 		assertNotNull(csvReader);
 		assertEquals(csvReader.readLine(), "idEstado,siglaEstado,regiaoNome,nomeCidade,nomeMesorregiao,nomeFormatado");
@@ -83,31 +83,31 @@ public class LocalidadeServiceRestTest {
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoParseFileCsv_givenNoExistingSiglaEstado_thenReturnEmptyList() throws IOException {
-		InputStream csvStream = localidadeServiceRest.findLocalidadeBySiglaEstadoParseFile("XX", ParserContentType.CSV);
+	public void findByStateParseFileCsv_givenNoExistingSiglaEstado_thenReturnStreamWithEmptyList() throws IOException {
+		InputStream csvStream = localidadeService.findByStateParseFile("XX", ParserContentType.CSV);
 		assertNotNull(csvStream);
-		
+
 		BufferedReader csvReader = new BufferedReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8));
 		assertNotNull(csvReader);
 		assertEquals(csvReader.readLine(), "idEstado,siglaEstado,regiaoNome,nomeCidade,nomeMesorregiao,nomeFormatado");
 		assertNull(csvReader.readLine());
 	}
-	
+
 	@Test
-	public void findLocalidadeBySiglaEstadoParseFileJson_givenValidSiglaEstado_thenResturnListOfCities() throws IOException {
-		InputStream jsonStream = localidadeServiceRest.findLocalidadeBySiglaEstadoParseFile("MG", ParserContentType.JSON);
+	public void findByStateParseFileJson_givenValidState_thenResturnStreamWithListOfCities() throws IOException {
+		InputStream jsonStream = localidadeService.findByStateParseFile("MG", ParserContentType.JSON);
 		assertNotNull(jsonStream);
-		
+
 		BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonStream, StandardCharsets.UTF_8));
 		assertNotNull(jsonReader);
 		assertTrue(jsonReader.readLine().contains("\"siglaEstado\":\"MG\""));
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoParseFileJson_givenNoExistingSiglaEstado_thenReturnEmptyList() throws IOException {
-		InputStream jsonStream = localidadeServiceRest.findLocalidadeBySiglaEstadoParseFile("XX", ParserContentType.JSON);
+	public void findByStateParseFileJson_givenNoExistingSiglaEstado_thenReturnStreamWithEmptyList() throws IOException {
+		InputStream jsonStream = localidadeService.findByStateParseFile("XX", ParserContentType.JSON);
 		assertNotNull(jsonStream);
-		
+
 		BufferedReader jsonReader = new BufferedReader(new InputStreamReader(jsonStream, StandardCharsets.UTF_8));
 		assertNotNull(jsonReader);
 		assertEquals(jsonReader.readLine(), "[]");
