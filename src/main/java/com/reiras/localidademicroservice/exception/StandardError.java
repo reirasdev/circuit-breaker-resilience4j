@@ -68,13 +68,13 @@ public class StandardError implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("StandardError [timestamp=");
 		builder.append(timestamp);
-		builder.append("\n status=");
+		builder.append(", status=");
 		builder.append(status);
-		builder.append("\n error=");
+		builder.append(", error=");
 		builder.append(error);
-		builder.append("\n message=");
+		builder.append(", message=");
 		builder.append(message);
-		builder.append("\n path=");
+		builder.append(", path=");
 		builder.append(path);
 		builder.append("]");
 		return builder.toString();

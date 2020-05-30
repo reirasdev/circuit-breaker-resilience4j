@@ -17,7 +17,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.HttpServerErrorException;
 
 import com.reiras.localidademicroservice.domain.Localidade;
 import com.reiras.localidademicroservice.exception.ObjectNotFoundException;
@@ -58,13 +57,6 @@ public class LocalidadeServiceTest {
 	}
 
 	@Test
-	public void findLocalidadeBySiglaEstadoAndNomeCidade_givenValidNomeCidadeAndInvalidSiglaEstado_thenThrowHttpServerErrorException() {
-		assertThrows(HttpServerErrorException.class, () -> {
-			localidadeService.findLocalidadeBySiglaEstadoAndNomeCidade("--", "Rio de Janeiro");
-		});
-	}
-
-	@Test
 	public void findLocalidadesBySiglaEstado_givenValidSiglaEstado_thenResturnListOfCities() {
 		List<Localidade> obj = localidadeService.findLocalidadeBySiglaEstado("SC");
 		assertNotNull(obj);
@@ -76,13 +68,6 @@ public class LocalidadeServiceTest {
 		List<Localidade> obj = localidadeService.findLocalidadeBySiglaEstado("XX");
 		assertNotNull(obj);
 		assertTrue(obj.isEmpty());
-	}
-
-	@Test
-	public void findLocalidadesBySiglaEstado_givenInvalidSiglaEstado_thenThrowHttpServerErrorException() {
-		assertThrows(HttpServerErrorException.class, () -> {
-			localidadeService.findLocalidadeBySiglaEstado("--");
-		});
 	}
 	
 	@Test
@@ -107,13 +92,6 @@ public class LocalidadeServiceTest {
 		assertEquals(csvReader.readLine(), "idEstado,siglaEstado,regiaoNome,nomeCidade,nomeMesorregiao,nomeFormatado");
 		assertNull(csvReader.readLine());
 	}
-
-	@Test
-	public void findLocalidadeBySiglaEstadoParseFileCsv_givenInvalidSiglaEstado_thenThrowHttpServerErrorException() {
-		assertThrows(HttpServerErrorException.class, () -> {
-			localidadeService.findLocalidadeBySiglaEstadoParseFile("--", ParserContentType.CSV);
-		});
-	}
 	
 	@Test
 	public void findLocalidadeBySiglaEstadoParseFileJson_givenValidSiglaEstado_thenResturnListOfCities() throws IOException {
@@ -134,13 +112,6 @@ public class LocalidadeServiceTest {
 		assertNotNull(jsonReader);
 		assertEquals(jsonReader.readLine(), "[]");
 		assertNull(jsonReader.readLine());
-	}
-
-	@Test
-	public void findLocalidadeBySiglaEstadoParseFileJson_givenInvalidSiglaEstado_thenThrowHttpServerErrorException() {
-		assertThrows(HttpServerErrorException.class, () -> {
-			localidadeService.findLocalidadeBySiglaEstadoParseFile("--", ParserContentType.JSON);
-		});
 	}
 
 }
