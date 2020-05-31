@@ -96,7 +96,7 @@ public class LocalidadeController {
 	@GetMapping(value = "/{UF}/csv")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Error handling file operation / Generic Error") })
 	@ApiOperation(value = "Given the initials of a state, this endpoint returns all its cities for download in CSV format. UF param is case insensitive.")
-	public @ResponseBody ResponseEntity<Void> findLocalidadeByUfCsv(@PathVariable(name = "UF") String uf,
+	public @ResponseBody ResponseEntity<Void> findLocalidadeByUfParseCsv(@PathVariable(name = "UF") String uf,
 			HttpServletResponse response){
 		
 		Instant start = Instant.now();
