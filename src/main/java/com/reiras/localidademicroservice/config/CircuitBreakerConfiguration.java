@@ -24,8 +24,8 @@ public class CircuitBreakerConfiguration {
         
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .failureRateThreshold(50)
-                .slidingWindowSize(50)
-                .minimumNumberOfCalls(10)
+                .slidingWindowSize(4)
+                .minimumNumberOfCalls(2)
                 .slidingWindowType(SlidingWindowType.COUNT_BASED)
                 .waitDurationInOpenState(Duration.ofMillis(60000))
                 .build();
