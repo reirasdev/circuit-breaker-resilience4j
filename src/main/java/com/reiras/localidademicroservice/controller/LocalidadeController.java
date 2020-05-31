@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reiras.localidademicroservice.domain.Localidade;
+import com.reiras.localidademicroservice.dto.CidadeDto;
 import com.reiras.localidademicroservice.exception.FileHandlingException;
 import com.reiras.localidademicroservice.service.Service;
 import com.reiras.localidademicroservice.service.parser.ParserContentType;
@@ -42,51 +43,51 @@ public class LocalidadeController {
 
 	@GetMapping
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "Object not found"), @ApiResponse(code = 500, message = "Generic Error") })
-	@ApiOperation(value = "Given the initials a state and a city name, this endpoint returns the id of the city. Parameters are case insensitive.")
-	public ResponseEntity<Long> getIdCidadeBySiglaEstadoAndNomeCidade(@RequestParam(value = "uf", defaultValue = "") String state,
-			@RequestParam(value = "cidade", defaultValue = "") String city) {
+	@ApiOperation(value = "Given the initials of a state and the city name, this endpoint returns the id of the city. Parameters are case insensitive.")
+	public ResponseEntity<CidadeDto> getIdCidadeByUfAndNomeCidade(@RequestParam(value = "uf", defaultValue = "") String uf,
+			@RequestParam(value = "nomeCidade", defaultValue = "") String nomeCidade) {
 		
 		Instant start = Instant.now();
-		LOGGER.info(new StringBuffer("[getIdCidadeBySiglaEstadoAndNomeCidade:Start]")
-				.append(" Input=>{siglaEstado=").append(state).append("}")
-				.append("{nomeCidade=").append(city).append("}").toString());
+		LOGGER.info(new StringBuffer("[getIdCidadeByUfAndNomeCidade:Start]")
+				.append(" Input=>{UF=").append(uf).append("}")
+				.append("{nomeCidade=").append(nomeCidade).append("}").toString());
 
-		if (!state.matches("[a-zA-Z]{2}")) {
-			LOGGER.warn(new StringBuffer("[getIdCidadeBySiglaEstadoAndNomeCidade]")
-					.append(" Garbage Input=>{UF=").append(state)
-					.append("}: Replacing with empty value").toString());
+		if (!uf.matches("[a-zA-Z]{2}")) {
+			LOGGER.warn(new StringBuffer("[getIdCidadeByUfAndNomeCidade]")
+					.append(" Garbage Input=>{UF=").append(uf)
+					.append("}: Replacing empty object").toString());
 			
-			state = "";
+			return ResponseEntity.ok().body(new CidadeDto());
 		}
 
-		Localidade localidade = localidadeService.findByStateAndCity(state, city);
+		Localidade localidade = localidadeService.findByStateAndCity(uf, nomeCidade);
 
-		LOGGER.info(new StringBuffer("[getIdCidadeBySiglaEstadoAndNomeCidade:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
+		LOGGER.info(new StringBuffer("[getIdCidadeByUfAndNomeCidade:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
 				.append(" Output=>{").append(localidade.getIdCidade()).append("}").toString());
 
-		return ResponseEntity.ok().body(localidade.getIdCidade());
+		return ResponseEntity.ok().body(new CidadeDto(localidade.getIdCidade()));
 	}
 
 	@GetMapping(value = "/{UF}")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Generic Error") })
 	@ApiOperation(value = "Given the initials of a state, this endpoint returns all its cities. UF param is case insensitive.")
-	public ResponseEntity<List<Localidade>> findLocalidadeBySiglaEstado(@PathVariable(name = "UF") String state) {
+	public ResponseEntity<List<Localidade>> findLocalidadeByUf(@PathVariable(name = "UF") String uf) {
 
 		Instant start = Instant.now();
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstado:Start]")
-				.append(" Input=>{UF=").append(state).append("}").toString());
+		LOGGER.info(new StringBuffer("[findLocalidadeByUf:Start]")
+				.append(" Input=>{UF=").append(uf).append("}").toString());
 		
-		if (!state.matches("[a-zA-Z]{2}")) {
-			LOGGER.warn(new StringBuffer("[findLocalidadeBySiglaEstadoParseJson]")
-					.append(" Garbage Input=>{UF=").append(state)
+		if (!uf.matches("[a-zA-Z]{2}")) {
+			LOGGER.warn(new StringBuffer("[findLocalidadeByUf]")
+					.append(" Garbage Input=>{UF=").append(uf)
 					.append("}: Returning empty list").toString());
 			
 			return ResponseEntity.ok().body(new ArrayList<Localidade>());
 		}
 
-		List<Localidade> localidadesList = localidadeService.findByState(state);
+		List<Localidade> localidadesList = localidadeService.findByState(uf);
 		
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstado:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
+		LOGGER.info(new StringBuffer("[findLocalidadeByUf:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
 				.append(" Output=>{").append(localidadesList.getClass()).append(":").append(localidadesList.size()).append("items}").toString());
 		
 		return ResponseEntity.ok().body(localidadesList);
@@ -95,34 +96,34 @@ public class LocalidadeController {
 	@GetMapping(value = "/{UF}/csv")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Error handling file operation / Generic Error") })
 	@ApiOperation(value = "Given the initials of a state, this endpoint returns all its cities for download in CSV format. UF param is case insensitive.")
-	public @ResponseBody ResponseEntity<Void> findLocalidadeBySiglaEstadoParseCsv(@PathVariable(name = "UF") String state,
+	public @ResponseBody ResponseEntity<Void> findLocalidadeByUfCsv(@PathVariable(name = "UF") String uf,
 			HttpServletResponse response){
 		
 		Instant start = Instant.now();
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoParseCsv:Start]")
-				.append(" Input=>{UF=").append(state).append("}").toString());
+		LOGGER.info(new StringBuffer("[findLocalidadeByUfCsv:Start]")
+				.append(" Input=>{UF=").append(uf).append("}").toString());
 		
-		if (!state.matches("[a-zA-Z]{2}")) {
-			LOGGER.warn(new StringBuffer("[findLocalidadeBySiglaEstadoParseCsv]")
-					.append(" Garbage Input=>{UF=").append(state)
+		if (!uf.matches("[a-zA-Z]{2}")) {
+			LOGGER.warn(new StringBuffer("[findLocalidadeByUfCsv]")
+					.append(" Garbage Input=>{UF=").append(uf)
 					.append("}: Replacing with empty value").toString());
 			
-			state = "";
+			uf = "";
 		}
 		
-		InputStream inputStream = localidadeService.findByStateParseFile(state, ParserContentType.CSV);
+		InputStream inputStream = localidadeService.findByStateParseFile(uf, ParserContentType.CSV);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment;filename=localidades.csv");
         
 		try {
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		} catch (IOException e) {
-			LOGGER.error("[findLocalidadeBySiglaEstadoParseCsv] Error returning file for download", e.getMessage());
+			LOGGER.error("[findLocalidadeByUfCsv] Error returning file for download", e.getMessage());
 			throw new FileHandlingException("Error returning CSV for download", e);
 		}
        
 		
-        LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoParseCsv:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
+        LOGGER.info(new StringBuffer("[findLocalidadeByUfCsv:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
 				.append(" Output=>{").append(inputStream.getClass()).append("}").toString());
 		
 		return ResponseEntity.noContent().build();
@@ -131,33 +132,33 @@ public class LocalidadeController {
 	@GetMapping(value = "/{UF}/json")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Error handling file operation / Generic Error") })
 	@ApiOperation(value = "Given the initials of a state, this endpoint returns all its cities for download in JSON format. UF param is case insensitive.")
-	public @ResponseBody ResponseEntity<Void> findLocalidadeBySiglaEstadoParseJson(@PathVariable(name = "UF") String state,
+	public @ResponseBody ResponseEntity<Void> findLocalidadeByUfParseJson(@PathVariable(name = "UF") String uf,
 			HttpServletResponse response){
 		
 		Instant start = Instant.now();
-		LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoParseJson:Start]")
-				.append(" Input=>{UF=").append(state).append("}").toString());
+		LOGGER.info(new StringBuffer("[findLocalidadeByUfParseJson:Start]")
+				.append(" Input=>{UF=").append(uf).append("}").toString());
 		
-		if (!state.matches("[a-zA-Z]{2}")) {
-			LOGGER.warn(new StringBuffer("[findLocalidadeBySiglaEstadoParseJson]")
-					.append(" Garbage Input=>{UF=").append(state)
+		if (!uf.matches("[a-zA-Z]{2}")) {
+			LOGGER.warn(new StringBuffer("[findLocalidadeByUfParseJson]")
+					.append(" Garbage Input=>{UF=").append(uf)
 					.append("}: Replacing with empty value").toString());
 			
-			state = "";
+			uf = "";
 		}
 		
-		InputStream inputStream = localidadeService.findByStateParseFile(state, ParserContentType.JSON);
+		InputStream inputStream = localidadeService.findByStateParseFile(uf, ParserContentType.JSON);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setHeader("Content-Disposition", "attachment;filename=localidades.json");
         
 		try {
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		} catch (IOException e) {
-			LOGGER.error("[findLocalidadeBySiglaEstadoParseJson] Error returning file for download", e.getMessage());
+			LOGGER.error("[findLocalidadeByUfParseJson] Error returning file for download", e.getMessage());
 			throw new FileHandlingException("Error returning JSON for download", e);
 		}
 		
-        LOGGER.info(new StringBuffer("[findLocalidadeBySiglaEstadoParseJson:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
+        LOGGER.info(new StringBuffer("[findLocalidadeByUfParseJson:End:").append(start.until(Instant.now(), ChronoUnit.MILLIS)).append("ms]")
 				.append(" Output=>{").append(inputStream.getClass()).append("}").toString());
 		
 		return ResponseEntity.noContent().build();

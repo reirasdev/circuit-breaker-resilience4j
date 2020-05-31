@@ -23,7 +23,7 @@ import com.reiras.localidademicroservice.exception.ObjectNotFoundException;
 import com.reiras.localidademicroservice.service.parser.ParserContentType;
 
 @SpringBootTest
-public class LocalidadeServiceRestTest {
+public class LocalidadeServiceTest {
 
 	@Autowired
 	private Service<Localidade> localidadeService;
@@ -57,7 +57,7 @@ public class LocalidadeServiceRestTest {
 	}
 
 	@Test
-	public void findByState_givenValidState_thenResturnListOfCities() {
+	public void findByState_givenValidState_thenReturnListOfLocalidades() {
 		List<Localidade> obj = localidadeService.findByState("AM");
 		assertNotNull(obj);
 		assertFalse(obj.isEmpty());
@@ -71,7 +71,7 @@ public class LocalidadeServiceRestTest {
 	}
 
 	@Test
-	public void findByStateParseFileCsv_givenValidState_thenResturnStreamWithListOfCities() throws IOException {
+	public void findByStateParseFileCsv_givenValidState_thenReturnStreamWithListOfLocalidades() throws IOException {
 		InputStream csvStream = localidadeService.findByStateParseFile("PB", ParserContentType.CSV);
 		assertNotNull(csvStream);
 
@@ -94,7 +94,7 @@ public class LocalidadeServiceRestTest {
 	}
 
 	@Test
-	public void findByStateParseFileJson_givenValidState_thenResturnStreamWithListOfCities() throws IOException {
+	public void findByStateParseFileJson_givenValidState_thenReturnStreamWithListOfLocalidades() throws IOException {
 		InputStream jsonStream = localidadeService.findByStateParseFile("MG", ParserContentType.JSON);
 		assertNotNull(jsonStream);
 
