@@ -108,7 +108,7 @@ public class LocalidadeControllerTest {
 		.andExpect(content().contentTypeCompatibleWith("text/csv"))
 		.andReturn();
 		
-        assertEquals(msvResult.getResponse().getContentAsByteArray().length, 10000);
+		assertTrue(msvResult.getResponse().getContentAsByteArray().length > 9999);
         assertTrue(msvResult.getResponse().getContentAsString().contains("idEstado,siglaEstado,regiaoNome,nomeCidade,nomeMesorregiao,nomeFormatado"));
         assertTrue(msvResult.getResponse().getContentAsString().contains("24,RN"));
 	}
@@ -145,7 +145,7 @@ public class LocalidadeControllerTest {
 		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 		.andReturn();
 		
-        assertEquals(msvResult.getResponse().getContentAsByteArray().length, 22830);
+		assertTrue(msvResult.getResponse().getContentAsByteArray().length > 22000);
         assertTrue(msvResult.getResponse().getContentAsString().contains("\"siglaEstado\":\"TO\""));
 	}
 	
