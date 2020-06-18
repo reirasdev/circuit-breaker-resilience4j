@@ -42,11 +42,11 @@ jobs:
     - name: Push Docker image to DockerHub
       run: docker push $GITHUB_REPOSITORY:$GITHUB_SHA
     
-    - name: Run image on deploy server hosted on AWS EC2 
-      uses: JimCronqvist/action-ssh@master
-      with:
-        hosts: '${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}'
-        privateKey: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
-        command: IMAGE_TAG=$GITHUB_SHA docker-compose up -d
+    #- name: Run image on deploy server hosted on AWS EC2 
+    #  uses: JimCronqvist/action-ssh@master
+    #  with:
+    #    hosts: '${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}'
+    #    privateKey: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+    #    command: IMAGE_TAG=$GITHUB_SHA docker-compose up -d
         # IMAGE_TAG refers to the last image tag published on DockerHub, it is passed as parameter to be used in docker-compose.yml
         # docker-compose.yml is available at repository root for conference
